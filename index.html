@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI · Курс для бизнеса — внедрение ИИ в команду</title>
+<style>
+  :root{
+    --ink:#15181C;--ink-soft:#1E232A;--ink-raised:#2B323B;
+    --cream:#EDF0F4;--cream-soft:#E2E7ED;--paper:#F7F9FC;
+    --accent:#2E6BFF;--accent-2:#5B8CFF;--accent-soft:#DCE7FF;
+    --line-dark:rgba(237,240,244,.16);--line-light:rgba(21,24,28,.14);
+    --txt-2-dark:rgba(237,240,244,.62);--txt-2-light:rgba(21,24,28,.60);
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    --serif:Georgia,"Times New Roman",serif;
+    --mono:"Menlo","Consolas",monospace;
+    --r:8px;--r-lg:12px;--r-xl:20px;
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--accent);color:#fff}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+  @media(max-width:640px){.wrap{padding:0 20px}}
+
+  /* ICONS */
+  .ic{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;display:inline-block;vertical-align:middle}
+  .ico-badge{width:48px;height:48px;border-radius:12px;border:1px solid var(--line-dark);display:flex;align-items:center;justify-content:center;color:var(--accent);background:rgba(46,107,255,.07);transition:all .3s var(--ease)}
+  .ico-badge .ic{width:24px;height:24px}
+  .light .ico-badge{border-color:var(--line-light)}
+
+  .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--txt-2-light);display:flex;align-items:center;gap:10px}
+  .eyebrow::before{content:"";width:24px;height:1px;background:var(--accent)}
+  .dark .eyebrow{color:var(--txt-2-dark)}
+
+  h2.sec{font-size:clamp(28px,4vw,42px);line-height:1.1;letter-spacing:-.02em;font-weight:600;margin:14px 0 10px}
+  h2.sec em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:0;color:var(--accent)}
+  .sec-sub{color:var(--txt-2-light);max-width:640px;font-size:16px;line-height:1.55}
+  .dark .sec-sub{color:var(--txt-2-dark)}
+
+  section{padding:80px 0;position:relative}
+  section.dark{background:var(--ink);color:var(--cream)}
+  @media(max-width:640px){section{padding:60px 0}}
+
+  /* REVEAL */
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  /* NAV */
+  .navwrap{position:fixed;top:16px;left:0;right:0;z-index:60;padding:0 32px;transition:top .3s var(--ease)}
+  @media(max-width:640px){.navwrap{padding:0 14px;top:10px}}
+  .navbar{max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:12px 14px 12px 22px;border:1px solid var(--line-dark);border-radius:999px;background:rgba(21,24,28,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:background .3s var(--ease),box-shadow .3s var(--ease)}
+  .navwrap.scrolled .navbar{background:rgba(21,24,28,.94);box-shadow:0 8px 30px rgba(0,0,0,.28)}
+  .navbar .logo{font-size:14px;font-weight:600;color:var(--cream);letter-spacing:.01em;display:flex;align-items:center;gap:8px}
+  .navbar .logo .mark{width:26px;height:26px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff}
+  .navbar .logo .mark .ic{width:15px;height:15px;stroke-width:2.2}
+  .navbar .links{display:flex;gap:26px;font-size:13.5px;color:var(--txt-2-dark)}
+  .navbar .links a{position:relative;padding:4px 0;transition:color .2s var(--ease)}
+  .navbar .links a::after{content:"";position:absolute;left:0;bottom:-2px;width:0;height:1px;background:var(--accent);transition:width .25s var(--ease)}
+  .navbar .links a:hover{color:var(--cream)}
+  .navbar .links a:hover::after{width:100%}
+  @media(max-width:820px){.navbar .links{display:none}}
+  .navbar .btn{padding:11px 20px;min-height:auto;font-size:13px}
+
+  /* BTN */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:.01em;padding:15px 26px;border-radius:999px;cursor:pointer;border:1px solid transparent;min-height:46px;transition:transform .2s var(--ease),background .2s var(--ease),box-shadow .25s var(--ease),color .2s var(--ease)}
+  .btn .ic{width:17px;height:17px;transition:transform .25s var(--ease)}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(46,107,255,.28)}
+  .btn-primary:hover{background:var(--accent-2);box-shadow:0 10px 26px rgba(46,107,255,.38)}
+  .btn-primary:hover .ic{transform:translateX(3px)}
+  .btn-secondary{background:var(--cream);color:var(--ink)}
+  .btn-ghost{background:transparent;color:var(--cream);border-color:var(--line-dark)}
+  .btn-ghost:hover{border-color:var(--cream);background:rgba(237,240,244,.06)}
+
+  /* HERO */
+  header.hero{background:var(--ink);color:var(--cream);padding:150px 0 96px;position:relative;overflow:hidden}
+  .blk-particles{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+  header.hero .glow{position:absolute;right:-180px;top:-140px;width:620px;height:620px;background:radial-gradient(circle,rgba(46,107,255,.22) 0%,rgba(46,107,255,0) 66%);pointer-events:none}
+  header.hero .grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--line-dark) 1px,transparent 1px),linear-gradient(90deg,var(--line-dark) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(circle at 70% 0%,#000 0%,transparent 60%);-webkit-mask-image:radial-gradient(circle at 70% 0%,#000 0%,transparent 60%);opacity:.5;pointer-events:none}
+  .hero-inner{display:grid;grid-template-columns:1.35fr .9fr;gap:56px;align-items:center;position:relative;z-index:2}
+  @media(max-width:900px){.hero-inner{grid-template-columns:1fr;gap:40px}}
+  .hero .pill{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--cream);border:1px solid var(--line-dark);background:rgba(237,240,244,.04);padding:8px 15px;border-radius:999px;margin-bottom:28px}
+  .hero .pill .ic{width:15px;height:15px;color:var(--accent)}
+  .hero h1{font-size:clamp(40px,6vw,76px);line-height:1.03;letter-spacing:-.03em;font-weight:600}
+  .hero h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
+  .hero p.lede{margin-top:24px;font-size:18px;max-width:560px;color:var(--txt-2-dark);line-height:1.6}
+  .hero .cta-row{margin-top:36px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .hero .price-tag{font-size:13.5px;letter-spacing:.02em;color:var(--txt-2-dark)}
+  .hero .price-tag b{color:var(--cream);font-weight:600}
+
+  /* hero snapshot card */
+  .snapshot{border:1px solid var(--line-dark);border-radius:var(--r-xl);background:linear-gradient(180deg,var(--ink-soft),rgba(30,35,42,.4));padding:28px;backdrop-filter:blur(6px)}
+  .snapshot .sh-top{display:flex;align-items:center;gap:12px;padding-bottom:18px;border-bottom:1px solid var(--line-dark);margin-bottom:6px}
+  .snapshot .sh-top .ico-badge{width:42px;height:42px}
+  .snapshot .sh-top .ico-badge .ic{width:21px;height:21px}
+  .snapshot .sh-top b{font-size:15px;color:var(--cream);font-weight:600;display:block}
+  .snapshot .sh-top span{font-size:12px;color:var(--txt-2-dark)}
+  .snapshot .row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line-dark)}
+  .snapshot .row:last-of-type{border-bottom:none}
+  .snapshot .row .k{display:flex;align-items:center;gap:11px;font-size:13.5px;color:var(--txt-2-dark)}
+  .snapshot .row .k .ic{width:17px;height:17px;color:var(--accent)}
+  .snapshot .row .v{font-size:14.5px;font-weight:600;color:var(--cream)}
+  .snapshot .v em{font-family:var(--serif);font-style:italic;color:var(--accent);font-weight:400;font-size:17px}
+  .snapshot .foot{margin-top:20px}
+  .snapshot .foot .btn{width:100%}
+
+  /* MARQUEE */
+  .marquee{background:var(--ink);border-top:1px solid var(--line-dark);border-bottom:1px solid var(--line-dark);padding:16px 0;overflow:hidden;white-space:nowrap;position:relative}
+  .marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:90px;z-index:2;pointer-events:none}
+  .marquee::before{left:0;background:linear-gradient(90deg,var(--ink),transparent)}
+  .marquee::after{right:0;background:linear-gradient(270deg,var(--ink),transparent)}
+  .marquee .track{display:inline-block;animation:slide 34s linear infinite;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--txt-2-dark)}
+  .marquee .track em{font-family:var(--serif);font-style:italic;text-transform:none;letter-spacing:.02em;color:var(--cream);font-size:15px}
+  .marquee .track .sep{color:var(--accent);margin:0 22px}
+  @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){.marquee .track{animation:none}}
+
+  /* ABOUT */
+  .about-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;margin-top:44px;align-items:start}
+  @media(max-width:760px){.about-grid{grid-template-columns:1fr;gap:28px}}
+  .about-grid p{color:var(--txt-2-light);font-size:16px;line-height:1.7;margin-bottom:18px}
+  .callout{border:1px solid var(--line-light);border-radius:var(--r-lg);padding:28px;background:var(--paper);position:relative;overflow:hidden}
+  .callout::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent)}
+  .callout .ico-badge{margin-bottom:16px}
+  .callout .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px}
+  .callout p{font-size:15.5px;color:var(--ink);line-height:1.6;margin:0}
+  .callout p b{font-weight:600}
+
+  /* GENERIC CARD GRID */
+  .grid-cards{display:grid;gap:16px;margin-top:44px}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.g4,.g3{grid-template-columns:1fr}}
+
+  .card{border-radius:var(--r-lg);padding:28px 26px;display:flex;flex-direction:column;gap:16px;transition:transform .3s var(--ease),border-color .3s var(--ease),box-shadow .3s var(--ease)}
+  .card .head{display:flex;align-items:center;justify-content:space-between}
+  .card .num{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--accent);opacity:.9}
+  .card h4{font-size:19px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+  .card p{font-size:13.5px;line-height:1.6}
+
+  /* dark cards (audience) */
+  .card.d{border:1px solid var(--line-dark);background:var(--ink-soft)}
+  .card.d h4{color:var(--cream)}
+  .card.d p{color:var(--txt-2-dark)}
+  .card.d:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 16px 40px rgba(0,0,0,.35)}
+  .card.d:hover .ico-badge{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  /* light cards (results) */
+  .card.l{border:1px solid var(--line-light);background:var(--paper)}
+  .card.l h4{color:var(--ink)}
+  .card.l p{color:var(--txt-2-light)}
+  .card.l:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 16px 40px rgba(21,24,28,.08)}
+  .card.l:hover .ico-badge{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+  /* final project banner */
+  .final-project{margin-top:16px;border:1px solid var(--line-light);border-radius:var(--r-lg);padding:32px;background:linear-gradient(120deg,var(--cream-soft),var(--paper));display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+  .final-project .ico-badge{width:60px;height:60px;background:var(--accent);color:#fff;border-color:var(--accent)}
+  .final-project .ico-badge .ic{width:30px;height:30px}
+  .final-project .fp-body{flex:1;min-width:260px}
+  .final-project h4{font-size:22px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}
+  .final-project p{font-size:14.5px;color:var(--txt-2-light);line-height:1.6}
+
+  /* STATS */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-dark);border:1px solid var(--line-dark);border-radius:var(--r-lg);overflow:hidden;margin-top:44px}
+  @media(max-width:700px){.stats{grid-template-columns:1fr}}
+  .stat{background:var(--ink-soft);padding:34px 28px;transition:background .3s var(--ease)}
+  .stat:hover{background:var(--ink-raised)}
+  .stat .ic{color:var(--accent);width:22px;height:22px;margin-bottom:18px}
+  .stat .num{font-size:52px;font-weight:600;letter-spacing:-.03em;line-height:1;color:var(--cream)}
+  .stat .num em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
+  .stat .cap{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-2-dark);margin-top:14px;line-height:1.6}
+
+  /* TABLE */
+  .table-scroll{overflow-x:auto;margin-top:44px;border:1px solid var(--line-light);border-radius:var(--r-lg)}
+  table.mods{width:100%;min-width:640px;border-collapse:collapse;font-size:14.5px;background:var(--paper)}
+  table.mods th{text-align:left;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-2-light);padding:16px 22px;border-bottom:1px solid var(--line-light);background:var(--cream-soft)}
+  table.mods td{padding:18px 22px;border-bottom:1px solid var(--line-light);vertical-align:middle}
+  table.mods tbody tr{transition:background .2s var(--ease)}
+  table.mods tbody tr:hover{background:var(--cream-soft)}
+  table.mods tr:last-child td{border-bottom:none}
+  .m-name{display:flex;align-items:flex-start;gap:14px}
+  .m-name .mn{font-family:var(--serif);font-style:italic;color:var(--accent);font-size:16px;min-width:24px;padding-top:1px}
+  .m-name .mt b{font-weight:600;letter-spacing:-.01em}
+  .m-name .mt span{display:block;font-weight:400;font-size:13px;color:var(--txt-2-light);margin-top:4px}
+  .m-hours{color:var(--txt-2-light);white-space:nowrap}
+  .m-price{font-weight:600;white-space:nowrap;font-size:15px}
+
+  /* PLANS */
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px;align-items:stretch}
+  @media(max-width:820px){.plans{grid-template-columns:1fr}}
+  .plan{border:1px solid var(--line-dark);border-radius:var(--r-lg);padding:32px 28px;background:var(--ink-soft);display:flex;flex-direction:column;gap:18px;transition:transform .3s var(--ease),border-color .3s var(--ease),box-shadow .3s var(--ease)}
+  .plan:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 18px 44px rgba(0,0,0,.4)}
+  .plan.featured{border-color:var(--accent);background:linear-gradient(180deg,var(--ink-raised),var(--ink-soft));position:relative}
+  .plan.featured::after{content:"Популярный выбор";position:absolute;top:-11px;left:28px;background:var(--accent);color:#fff;font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;padding:5px 12px;border-radius:999px}
+  .plan .badge{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding:7px 14px;border-radius:999px;border:1px solid var(--line-dark);color:var(--cream)}
+  .plan .badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .plan .p-title{font-family:var(--serif);font-style:italic;color:var(--accent);font-size:18px}
+  .plan .p-price{font-size:40px;font-weight:600;letter-spacing:-.03em;color:var(--cream);line-height:1;margin-top:-6px}
+  .plan .p-price small{font-size:15px;font-weight:400;color:var(--txt-2-dark);letter-spacing:0}
+  .plan .p-desc{font-size:13.5px;color:var(--txt-2-dark);line-height:1.6}
+  .plan ul{list-style:none;display:flex;flex-direction:column;gap:11px;flex:1}
+  .plan ul li{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--txt-2-dark);line-height:1.5}
+  .plan ul li .ic{width:17px;height:17px;color:var(--accent);margin-top:1px}
+  .plan .btn{width:100%}
+
+  /* FORM */
+  section.form-sec{background:var(--cream-soft)}
+  .form-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:44px;align-items:start}
+  @media(max-width:820px){.form-wrap{grid-template-columns:1fr;gap:28px}}
+  .form-side .step{display:flex;gap:16px;padding:18px 0;border-bottom:1px solid var(--line-light)}
+  .form-side .step:last-child{border-bottom:none}
+  .form-side .step .ico-badge{width:42px;height:42px;background:rgba(46,107,255,.08)}
+  .form-side .step .ico-badge .ic{width:20px;height:20px}
+  .form-side .step h5{font-size:16px;font-weight:600;margin-bottom:4px}
+  .form-side .step p{font-size:13.5px;color:var(--txt-2-light);line-height:1.55}
+  .form-card{border:1px solid var(--line-light);border-radius:var(--r-lg);padding:36px;background:var(--paper);box-shadow:0 10px 40px rgba(21,24,28,.05)}
+  @media(max-width:640px){.form-card{padding:26px}}
+  .form-card .field{margin-bottom:16px}
+  .form-card label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-2-light);font-weight:600;margin-bottom:8px}
+  .form-card input,.form-card select{width:100%;font-family:var(--sans);font-size:15px;padding:14px 16px;border:1px solid var(--line-light);border-radius:var(--r);background:var(--cream);color:var(--ink);min-height:46px;transition:border-color .2s var(--ease),box-shadow .2s var(--ease);cursor:text}
+  .form-card select{cursor:pointer}
+  .form-card input:focus,.form-card select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,107,255,.14)}
+  .form-card .consent{display:flex;gap:11px;align-items:flex-start;margin:20px 0;font-size:13px;color:var(--txt-2-light);line-height:1.5;cursor:pointer}
+  .form-card .consent input{width:18px;height:18px;min-height:auto;flex-shrink:0;margin-top:1px;accent-color:var(--accent);cursor:pointer}
+  .form-card .btn{width:100%}
+  .form-note{font-size:12.5px;color:var(--txt-2-light);margin-top:14px;line-height:1.55}
+
+  /* FOOTER */
+  footer.site{background:var(--ink);color:var(--txt-2-dark);padding:80px 0 40px;position:relative;overflow:hidden}
+  footer.site .glow{position:absolute;left:-160px;bottom:-200px;width:520px;height:520px;background:radial-gradient(circle,rgba(46,107,255,.14) 0%,transparent 66%);pointer-events:none}
+  footer.site .big{font-size:clamp(30px,4.4vw,52px);font-weight:600;letter-spacing:-.02em;line-height:1.05;color:var(--cream);max-width:760px;position:relative}
+  footer.site .big em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
+  footer.site .cta-row{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap;position:relative}
+  footer.site .cols{display:grid;grid-template-columns:2fr 1fr 1fr;gap:32px;margin-top:60px;padding-top:40px;border-top:1px solid var(--line-dark);position:relative}
+  @media(max-width:760px){footer.site .cols{grid-template-columns:1fr;gap:28px}}
+  footer.site .cols h5{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt-2-dark);margin-bottom:14px}
+  footer.site .cols a{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--cream);margin-bottom:10px;opacity:.85;transition:opacity .2s var(--ease),transform .2s var(--ease)}
+  footer.site .cols a:hover{opacity:1;transform:translateX(2px)}
+  footer.site .cols a .ic{width:15px;height:15px;color:var(--accent)}
+  footer.site .req{font-size:13px;line-height:1.7;color:var(--txt-2-dark)}
+  footer.site .req b{color:var(--cream);font-weight:600}
+  .disclaimer{margin-top:40px;padding-top:24px;border-top:1px solid var(--line-dark);font-size:10.5px;letter-spacing:.06em;line-height:1.7;color:rgba(237,240,244,.4);text-transform:uppercase;position:relative}
+  .madeby{margin-top:20px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-2-dark);position:relative}
+  .madeby a{color:var(--accent)}
+
+  /* WORKS / REELS */
+  .works-sec{background:var(--paper)}
+  .works-head{display:grid;grid-template-columns:1.5fr 1fr;gap:40px;align-items:end}
+  @media(max-width:760px){.works-head{grid-template-columns:1fr;gap:18px}}
+  .works-label{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;background:var(--ink);color:var(--cream);padding:7px 14px;border-radius:999px}
+  .works-label .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .works-head h2{font-size:clamp(30px,4.6vw,52px);line-height:1.04;letter-spacing:-.02em;font-weight:600;margin-top:20px}
+  .works-head h2 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--accent)}
+  .works-desc{border:1px solid var(--line-light);border-radius:12px;padding:18px 20px;font-size:14px;color:var(--txt-2-light);line-height:1.55;background:var(--cream)}
+  .reels-row{margin-top:28px;padding:16px 0;overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(90deg,transparent,#000 3.5%,#000 96.5%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3.5%,#000 96.5%,transparent)}
+  .reels-track{display:flex;gap:18px;width:max-content;will-change:transform;animation:reelsscroll 90s linear infinite}
+  .reels-row:hover .reels-track{animation-play-state:paused}
+  .reels-row .reel-item{flex:0 0 300px;width:300px}
+  @keyframes reelsscroll{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 9px))}}
+  @media(max-width:760px){.reels-row{margin-left:-20px;margin-right:-20px}.reels-track{gap:14px}.reels-row .reel-item{flex-basis:250px;width:250px}@keyframes reelsscroll{from{transform:translateX(0)}to{transform:translateX(calc(-50% - 7px))}}}
+  @media(prefers-reduced-motion:reduce){.reels-track{animation:none}.reels-row{overflow-x:auto}}
+  .reel{position:relative;aspect-ratio:9/16;border-radius:18px;overflow:hidden;background:var(--ink);border:1px solid var(--line-light);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+  .reel:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(21,24,28,.18)}
+  .reel video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .reel .topbar{position:absolute;top:0;left:0;right:0;padding:14px 14px 30px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(0,0,0,.5),transparent);z-index:2}
+  .reel .rlabel{font-size:14px;font-weight:600;color:#fff;font-family:var(--serif);font-style:italic}
+  .reel .mute{position:absolute;top:12px;right:12px;z-index:3;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);transition:background .2s var(--ease)}
+  .reel .mute:hover{background:rgba(0,0,0,.72)}
+  .reel .mute .ic{width:16px;height:16px}
+  .reel .rail{position:absolute;right:10px;bottom:96px;display:flex;flex-direction:column;gap:16px;z-index:2;align-items:center}
+  .reel .rail .ra{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#fff;font-size:11px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+  .reel .rail .rc{font-size:10.5px;font-weight:600;line-height:1}
+  .reel .rail .ra .ic{width:23px;height:23px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))}
+  .reel .btm{position:absolute;left:0;right:0;bottom:0;padding:38px 14px 16px;background:linear-gradient(0deg,rgba(0,0,0,.78),rgba(0,0,0,.15) 70%,transparent);z-index:2}
+  .reel .handle{display:flex;align-items:center;gap:8px;color:#fff;font-size:13.5px;font-weight:600}
+  .reel .handle .av{width:26px;height:26px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0}
+  .reel .handle .follow{font-size:10px;font-weight:600;color:#fff;border:1px solid rgba(255,255,255,.45);padding:3px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.08em}
+  .reel .cap{color:rgba(255,255,255,.92);font-size:12.5px;line-height:1.45;margin-top:9px}
+  .reel-meta{margin-top:12px;display:flex;align-items:center;justify-content:space-between;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--txt-2-light)}
+  .reel-meta b{color:var(--accent);font-weight:600}
+</style>
+</head>
+
+<body>
+
+<!-- SVG SPRITE -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></symbol><symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></symbol><symbol id="i-mute" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M22 9l-6 6"/><path d="M16 9l6 6"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M12 14l4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M12 7V4"/><circle cx="12" cy="3" r="1"/><path d="M8 7h8a3 3 0 0 1 3 3v1H5v-1a3 3 0 0 1 3-3z"/><path d="M9 16h.01M15 16h.01"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5"/><path d="M16 13H8M16 17H8M10 9H8"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-2"/><path d="M3 7h16a2 2 0 0 1 2 2v0H5a2 2 0 0 1-2-2"/><circle cx="16" cy="13" r="1.3"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-graduation" viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c0 1 2.5 2.5 6 2.5s6-1.5 6-2.5v-5"/></symbol>
+</svg>
+
+<!-- ===== NAV ===== -->
+<div class="navwrap" id="nav">
+  <nav class="navbar">
+    <div class="logo"><span class="mark"><svg class="ic"><use href="#i-spark"/></svg></span>AI · Курс для бизнеса</div>
+    <div class="links">
+      <a href="#value">Возможности</a>
+      <a href="#learn">Чему научим</a>
+      <a href="#program">Программа</a>
+      <a href="#process">Внедрение</a>
+      <a href="#plans">Тарифы</a>
+    </div>
+    <a href="#form" class="btn btn-primary">Обсудить внедрение <svg class="ic"><use href="#i-arrow"/></svg></a>
+  </nav>
+</div>
+
+<!-- ===== HERO ===== -->
+<header class="hero dark">
+  <div class="glow"></div>
+  <div class="grid-bg"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="reveal">
+        <div class="pill"><svg class="ic"><use href="#i-spark"/></svg>Корпоративное обучение · ИИ для команд</div>
+        <h1>Внедрите <em>ИИ</em> в работу вашей команды</h1>
+        <p class="lede">Обучаем сотрудников применять искусственный интеллект в реальных задачах — от рутины и документов до аналитики и клиентского сервиса. Программа адаптируется под процессы вашей компании.</p>
+        <div class="cta-row">
+          <a href="#form" class="btn btn-primary">Оставить заявку <svg class="ic"><use href="#i-arrow"/></svg></a>
+          <a href="#program" class="btn btn-ghost">Смотреть программу</a>
+        </div>
+        <div class="cta-row" style="margin-top:18px">
+          <span class="price-tag">Формат: <b>только онлайн</b> · группы <b>от 5 человек</b> · программа <b>под задачи</b></span>
+        </div>
+      </div>
+      <div class="snapshot reveal">
+        <div class="sh-top">
+          <div class="ico-badge"><svg class="ic"><use href="#i-shield"/></svg></div>
+          <div><b>Корпоративный формат</b><span>Обучение под задачи бизнеса</span></div>
+        </div>
+        <div class="row"><span class="k"><svg class="ic"><use href="#i-user"/></svg>Размер группы</span><span class="v">от 5 человек</span></div>
+        <div class="row"><span class="k"><svg class="ic"><use href="#i-monitor"/></svg>Формат</span><span class="v">Только онлайн</span></div>
+        <div class="row"><span class="k"><svg class="ic"><use href="#i-layers"/></svg>Программа</span><span class="v">Под процессы</span></div>
+        <div class="row"><span class="k"><svg class="ic"><use href="#i-graduation"/></svg>Итог</span><span class="v">Сертификаты</span></div>
+        <div class="foot"><a href="#form" class="btn btn-primary">Получить КП <svg class="ic"><use href="#i-arrow"/></svg></a></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== MARQUEE ===== -->
+<div class="marquee">
+  <div class="track"><em>Нам доверяют команды из разных отраслей</em><span class="sep">/</span>ФИНТЕХ<span class="sep">•</span>РИТЕЙЛ<span class="sep">•</span>ПРОИЗВОДСТВО<span class="sep">•</span>ЛОГИСТИКА<span class="sep">•</span>МАРКЕТИНГ<span class="sep">•</span>КОНСАЛТИНГ<span class="sep">•</span>IT<span class="sep">•</span>HR<span class="sep">•</span><em>Нам доверяют команды из разных отраслей</em><span class="sep">/</span>ФИНТЕХ<span class="sep">•</span>РИТЕЙЛ<span class="sep">•</span>ПРОИЗВОДСТВО<span class="sep">•</span>ЛОГИСТИКА<span class="sep">•</span>МАРКЕТИНГ<span class="sep">•</span>КОНСАЛТИНГ<span class="sep">•</span>IT<span class="sep">•</span>HR<span class="sep">•</span></div>
+</div>
+
+<!-- ===== VALUE ===== -->
+<section id="value" class="light">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">01 · Зачем это бизнесу</div>
+      <h2 class="sec">ИИ уже меняет <em>правила</em> в вашей отрасли</h2>
+      <p class="sec-sub">Компании, которые внедряют ИИ в ежедневные процессы, экономят десятки часов на команду и быстрее принимают решения. Мы помогаем сделать это системно, а не точечно.</p>
+    </div>
+    <div class="about-grid">
+      <div class="reveal">
+        <p>Сотрудники тратят часы на рутину: обработку почты, подготовку документов, отчётность и поиск информации. ИИ забирает эту нагрузку на себя — а команда фокусируется на результате и клиентах.</p>
+        <p>Мы не даём абстрактную теорию. Каждый модуль построен вокруг реальных задач ваших отделов: продажи, маркетинг, операционка, поддержка и аналитика. После обучения у команды остаются готовые сценарии и ассистенты.</p>
+      </div>
+      <div class="callout reveal">
+        <div class="ico-badge"><svg class="ic"><use href="#i-gauge"/></svg></div>
+        <div class="k">Эффект для команды</div>
+        <p><b>До 40% рабочего времени</b> освобождается за счёт автоматизации рутинных операций уже в первый месяц после обучения.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="dark">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">Результаты в цифрах</div>
+      <h2 class="sec">Что получает <em>компания</em></h2>
+    </div>
+    <div class="stats">
+      <div class="stat reveal"><svg class="ic"><use href="#i-clock"/></svg><div class="num">−<span data-count="40">0</span>%</div><div class="cap">времени на рутинные задачи</div></div>
+      <div class="stat reveal"><svg class="ic"><use href="#i-chart"/></svg><div class="num">×<span data-count="2">0</span></div><div class="cap">скорость подготовки документов и отчётов</div></div>
+      <div class="stat reveal"><svg class="ic"><use href="#i-layers"/></svg><div class="num"><span data-count="8">0</span></div><div class="cap">практических модулей под задачи бизнеса</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LEARN / CAPABILITIES ===== -->
+<section id="learn" class="light">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">02 · Чему научится команда</div>
+      <h2 class="sec">Навыки, которые дают <em>результат</em></h2>
+      <p class="sec-sub">Практические умения, которые сотрудники применят на следующий день после занятия.</p>
+    </div>
+    <div class="grid-cards g4">
+      <div class="card l reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-msg"/></svg></div><span class="num">01</span></div><h4>Промпт-инжиниринг</h4><p>Формулировать точные запросы и получать нужный результат с первого раза.</p></div>
+      <div class="card l reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-bot"/></svg></div><span class="num">02</span></div><h4>Автоматизация процессов</h4><p>Настраивать ИИ-ассистентов и сценарии под рутинные операции отделов.</p></div>
+      <div class="card l reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-file"/></svg></div><span class="num">03</span></div><h4>Документы и аналитика</h4><p>Готовить отчёты, письма и презентации в разы быстрее и качественнее.</p></div>
+      <div class="card l reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-shield"/></svg></div><span class="num">04</span></div><h4>Контроль и безопасность</h4><p>Проверять качество, соблюдать этику и политику безопасности компании.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FORMATS ===== -->
+<section id="formats" class="dark">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">03 · Форматы обучения</div>
+      <h2 class="sec">Под <em>любую</em> структуру команды</h2>
+      <p class="sec-sub">Выбирайте формат под размер команды, график и цели — или комбинируйте.</p>
+    </div>
+    <div class="grid-cards g4">
+      <div class="card d reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-user"/></svg></div><span class="num">01</span></div><h4>Групповой поток</h4><p>Обучение всей команды по единой программе с общими дедлайнами.</p></div>
+      <div class="card d reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-graduation"/></svg></div><span class="num">02</span></div><h4>Индивидуальные треки</h4><p>Персональные маршруты для разных ролей и уровней подготовки.</p></div>
+      <div class="card d reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-layers"/></svg></div><span class="num">03</span></div><h4>Интеграция под процессы</h4><p>Кейсы и задания на реальных данных и задачах вашей компании.</p></div>
+      <div class="card d reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-msg"/></svg></div><span class="num">04</span></div><h4>Поддержка после курса</h4><p>Сопровождение, ответы экспертов и замер результата команды.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROGRAM ===== -->
+<section id="program" class="light">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">04 · Программа</div>
+      <h2 class="sec">8 модулей от основ до <em>внедрения</em></h2>
+      <p class="sec-sub">Комплексная программа с практическим результатом на каждом шаге. Можно пройти целиком или собрать под отделы.</p>
+    </div>
+    <div class="table-scroll reveal">
+      <table class="mods">
+        <thead><tr><th>Модуль</th><th>Результат для команды</th><th>Часы</th></tr></thead>
+        <tbody>
+          <tr><td><div class="m-name"><span class="mn">01</span><div class="mt"><b>Основы ИИ: возможности и риски</b><span>Единое понимание ИИ во всей команде</span></div></div></td><td class="m-hours">Общий язык и база</td><td class="m-price">3 часа</td></tr>
+          <tr><td><div class="m-name"><span class="mn">02</span><div class="mt"><b>Промпт-инжиниринг</b><span>Точные запросы для рабочих задач</span></div></div></td><td class="m-hours">Качество с первого раза</td><td class="m-price">5 часов</td></tr>
+          <tr><td><div class="m-name"><span class="mn">03</span><div class="mt"><b>Автоматизация и ИИ-ассистенты</b><span>Сценарии и ассистенты под процессы (n8n)</span></div></div></td><td class="m-hours">−40% рутины</td><td class="m-price">3 часа</td></tr>
+          <tr><td><div class="m-name"><span class="mn">04</span><div class="mt"><b>Документы и аналитика</b><span>Отчёты, письма, презентации, данные</span></div></div></td><td class="m-hours">Скорость ×2</td><td class="m-price">4 часа</td></tr>
+          <tr><td><div class="m-name"><span class="mn">05</span><div class="mt"><b>Промпт-архитектура и SEO</b><span>Сложные сценарии и контент на масштаб</span></div></div></td><td class="m-hours">Масштаб на отдел</td><td class="m-price">5 часов</td></tr>
+          <tr><td><div class="m-name"><span class="mn">06</span><div class="mt"><b>ИИ-контент: фото, видео, озвучка</b><span>Материалы для маркетинга и продаж</span></div></div></td><td class="m-hours">Контент без подрядчиков</td><td class="m-price">5 часов</td></tr>
+          <tr><td><div class="m-name"><span class="mn">07</span><div class="mt"><b>Качество, этика и безопасность</b><span>Контроль результатов и политика компании</span></div></div></td><td class="m-hours">Снижение рисков</td><td class="m-price">2 часа</td></tr>
+          <tr><td><div class="m-name"><span class="mn">08</span><div class="mt"><b>Внедрение в процессы компании</b><span>Индивидуальный проект отдела</span></div></div></td><td class="m-hours">Готовое решение</td><td class="m-price">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="final-project reveal">
+      <div class="ico-badge"><svg class="ic"><use href="#i-rocket"/></svg></div>
+      <div class="fp-body">
+        <h4>Итоговый проект под задачу вашей компании</h4>
+        <p>В финале команды берут реальную задачу отдела и внедряют ИИ-решение под руководством экспертов — с готовым результатом и планом масштабирования.</p>
+      </div>
+      <a href="#form" class="btn btn-primary">Обсудить программу <svg class="ic"><use href="#i-arrow"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROCESS ===== -->
+<section id="process" class="dark">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">05 · Как проходит внедрение</div>
+      <h2 class="sec">Прозрачный путь <em>к результату</em></h2>
+      <p class="sec-sub">От первого созвона до замера эффекта — вы понимаете каждый шаг.</p>
+    </div>
+    <div class="grid-cards g4">
+      <div class="card d reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-gauge"/></svg></div><span class="num">01</span></div><h4>Аудит задач</h4><p>Разбираем процессы и находим, где ИИ даст максимум пользы.</p></div>
+      <div class="card d reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-layers"/></svg></div><span class="num">02</span></div><h4>Программа под компанию</h4><p>Собираем модули и кейсы под ваши отделы, роли и цели.</p></div>
+      <div class="card d reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-graduation"/></svg></div><span class="num">03</span></div><h4>Обучение команды</h4><p>Проводим занятия онлайн с живой практикой на ваших задачах.</p></div>
+      <div class="card d reveal"><div class="head"><div class="ico-badge"><svg class="ic"><use href="#i-chart"/></svg></div><span class="num">04</span></div><h4>Замер результата</h4><p>Оцениваем эффект, даём поддержку и план масштабирования.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PLANS ===== -->
+<section id="plans" class="light">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">06 · Тарифы для бизнеса</div>
+      <h2 class="sec">Выберите <em>масштаб</em> внедрения</h2>
+      <p class="sec-sub">Гибкие пакеты под размер команды и глубину внедрения. Точную стоимость рассчитаем после короткого созвона.</p>
+    </div>
+    <div class="plans">
+      <div class="plan reveal">
+        <span class="badge"><span class="dot"></span>Команда</span>
+        <div class="p-title">Team</div>
+        <div class="p-price">от 90 000 ₽ <small>/ группа</small></div>
+        <p class="p-desc">Базовый поток для небольшой команды по готовой программе.</p>
+        <ul>
+          <li><svg class="ic"><use href="#i-check"/></svg>До 10 сотрудников</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>8 модулей онлайн</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Общие дедлайны и практика</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Сертификаты сотрудникам</li>
+        </ul>
+        <a href="#form" class="btn btn-ghost">Оставить заявку</a>
+      </div>
+      <div class="plan featured reveal">
+        <span class="badge"><span class="dot"></span>Бизнес</span>
+        <div class="p-title">Business</div>
+        <div class="p-price">по запросу</div>
+        <p class="p-desc">Программа под процессы вашей компании с кейсами на ваших данных.</p>
+        <ul>
+          <li><svg class="ic"><use href="#i-check"/></svg>От 10 до 50 сотрудников</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Кейсы на ваших данных</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Индивидуальные треки по ролям</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Поддержка после курса</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Отчёт по результатам</li>
+        </ul>
+        <a href="#form" class="btn btn-primary">Обсудить внедрение <svg class="ic"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="plan reveal">
+        <span class="badge"><span class="dot"></span>Enterprise</span>
+        <div class="p-title">Enterprise</div>
+        <div class="p-price">по запросу</div>
+        <p class="p-desc">Масштабное внедрение и сопровождение для крупных команд.</p>
+        <ul>
+          <li><svg class="ic"><use href="#i-check"/></svg>Без ограничений по числу</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Глубокая интеграция в процессы</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Выделенный менеджер</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>SLA и требования безопасности</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Замер ROI и масштабирование</li>
+        </ul>
+        <a href="#form" class="btn btn-ghost">Связаться с нами</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FORM ===== -->
+<section id="form" class="form-sec light">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="eyebrow">07 · Заявка</div>
+      <h2 class="sec">Обсудим <em>внедрение</em> в вашей компании</h2>
+      <p class="sec-sub">Оставьте заявку — подготовим коммерческое предложение и программу под ваши задачи в течение рабочего дня.</p>
+    </div>
+    <div class="form-wrap">
+      <div class="form-side reveal">
+        <div class="step"><div class="ico-badge"><svg class="ic"><use href="#i-send"/></svg></div><div><h5>1. Оставляете заявку</h5><p>Расскажите о компании, команде и задачах.</p></div></div>
+        <div class="step"><div class="ico-badge"><svg class="ic"><use href="#i-msg"/></svg></div><div><h5>2. Обсуждаем и готовим КП</h5><p>Подбираем формат, программу и стоимость.</p></div></div>
+        <div class="step"><div class="ico-badge"><svg class="ic"><use href="#i-graduation"/></svg></div><div><h5>3. Обучаем команду</h5><p>Запускаем поток под ваши процессы и замеряем результат.</p></div></div>
+      </div>
+      <div class="form-card reveal">
+        <form onsubmit="return false">
+          <div class="field"><label>Имя</label><input type="text" placeholder="Как к вам обращаться" autocomplete="name"></div>
+          <div class="field"><label>Компания</label><input type="text" placeholder="Название компании" autocomplete="organization"></div>
+          <div class="field"><label>Рабочий email</label><input type="email" placeholder="you@company.com" autocomplete="email"></div>
+          <div class="field"><label>Размер команды</label><select><option value="" disabled selected>Выберите вариант</option><option>5–10 человек</option><option>11–30 человек</option><option>31–50 человек</option><option>50+ человек</option></select></div>
+          <div class="field"><label>Комментарий</label><input type="text" placeholder="Задачи или вопросы (необязательно)"></div>
+          <label class="consent"><input type="checkbox"><span>Согласен на обработку персональных данных и получение коммерческого предложения.</span></label>
+          <button type="submit" class="btn btn-primary">Отправить заявку <svg class="ic"><use href="#i-send"/></svg></button>
+          <p class="form-note">Ответим в течение рабочего дня. Никакого спама — только по делу.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="site dark">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="big reveal">Дайте команде <em>суперсилу</em> ИИ — и обгоните конкурентов.</div>
+    <div class="cta-row reveal">
+      <a href="#form" class="btn btn-primary">Оставить заявку <svg class="ic"><use href="#i-arrow"/></svg></a>
+      <a href="#program" class="btn btn-ghost">Смотреть программу</a>
+    </div>
+    <div class="cols">
+      <div>
+        <h5>AI · Курс для бизнеса</h5>
+        <p class="req">Корпоративное обучение применению искусственного интеллекта. Программа под задачи вашей компании, полностью онлайн.<br><b>Группы от 5 человек.</b></p>
+      </div>
+      <div>
+        <h5>Разделы</h5>
+        <a href="#value"><svg class="ic"><use href="#i-arrow"/></svg>Возможности</a>
+        <a href="#learn"><svg class="ic"><use href="#i-arrow"/></svg>Чему научим</a>
+        <a href="#program"><svg class="ic"><use href="#i-arrow"/></svg>Программа</a>
+        <a href="#plans"><svg class="ic"><use href="#i-arrow"/></svg>Тарифы</a>
+      </div>
+      <div>
+        <h5>Контакты</h5>
+        <a href="#form"><svg class="ic"><use href="#i-send"/></svg>Оставить заявку</a>
+        <a href="mailto:hello@company.com"><svg class="ic"><use href="#i-msg"/></svg>hello@company.com</a>
+      </div>
+    </div>
+    <div class="disclaimer">Материалы носят информационный характер. Итоговая программа и стоимость определяются индивидуально по итогам обсуждения задач компании.</div>
+    <div class="madeby">AI · Курс для бизнеса — © 2026</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Nav scroll state
+  var nav=document.getElementById('nav');
+  var onScroll=function(){ if(window.scrollY>24){nav.classList.add('scrolled')}else{nav.classList.remove('scrolled')} };
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Reveal on scroll
+  var reveals=[].slice.call(document.querySelectorAll('.reveal'));
+  if(reduce||!('IntersectionObserver'in window)){
+    reveals.forEach(function(el){el.classList.add('in')});
+  }else{
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){e.target.classList.add('in'); io.unobserve(e.target);} });
+    },{threshold:0.14,rootMargin:'0px 0px -8% 0px'});
+    reveals.forEach(function(el){io.observe(el)});
+  }
+
+  // Stat count-up
+  var counted=false;
+  function countUp(){
+    if(counted)return; counted=true;
+    document.querySelectorAll('[data-count]').forEach(function(el){
+      var target=parseInt(el.getAttribute('data-count'),10);
+      if(reduce){el.textContent=target;return;}
+      var start=null,dur=1100;
+      function step(ts){ if(!start)start=ts; var p=Math.min((ts-start)/dur,1);
+        el.textContent=Math.round(target*(1-Math.pow(1-p,3)));
+        if(p<1)requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  var statsSection=document.querySelector('.stats');
+  if(statsSection){
+    if(!('IntersectionObserver'in window)){countUp();}
+    else{ var so=new IntersectionObserver(function(en){ en.forEach(function(e){ if(e.isIntersecting){countUp(); so.disconnect();} }); },{threshold:0.4}); so.observe(statsSection); }
+  }
+})();
+</script>
+
+<script>
+(function(){
+  var reduceR = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  (function(){
+    var rc=[['12K','843','1.3K'],['3.8K','512','740'],['9.1K','1.2K','2.1K'],['5.4K','320','610'],['24K','1.6K','3.4K'],['1.9K','205','430'],['7.2K','640','980'],['15K','1.1K','2.6K'],['4.5K','388','720'],['6.7K','540','1.1K'],['2.1K','176','390']];
+    document.querySelectorAll('.reels-track > .reel-item .rail').forEach(function(rail,i){ var t=rc[i%rc.length]; rail.querySelectorAll('.ra').forEach(function(ra,j){ if(ra.querySelector('.rc'))return; var s=document.createElement('span'); s.className='rc'; s.textContent=t[j]||''; ra.appendChild(s); }); });
+    var track=document.querySelector('.reels-track');
+    if(track && !reduceR){ var kids=Array.prototype.slice.call(track.children); kids.forEach(function(n){ var c=n.cloneNode(true); c.classList.remove('reveal'); track.appendChild(c); }); }
+  })();
+  document.querySelectorAll('.reel video').forEach(function(v){ v.muted = true; if(reduceR){ v.setAttribute('controls',''); } });
+  if(!reduceR && ('IntersectionObserver' in window)){
+    var ro = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        var v = e.target.querySelector('video'); if(!v) return;
+        if(e.isIntersecting){ var p = v.play(); if(p && p.catch){ p.catch(function(){}); } } else { v.pause(); }
+      });
+    }, { threshold: 0.4 });
+    document.querySelectorAll('.reel').forEach(function(r){ ro.observe(r); });
+  }
+  document.querySelectorAll('.reel .mute').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var v = btn.closest('.reel').querySelector('video');
+      v.muted = !v.muted;
+      btn.querySelector('use').setAttribute('href', v.muted ? '#i-mute' : '#i-volume');
+      if(!v.muted){ var p = v.play(); if(p && p.catch){ p.catch(function(){}); } }
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var DPR=Math.min(window.devicePixelRatio||1,2);
+  var TAU=Math.PI*2;
+  var DARK=[[120,160,255],[150,182,255],[200,220,255],[236,244,255]];
+  var LIGHT=[[46,107,255],[60,96,180],[92,124,210]];
+  function lerp(a,b,u){return a+(b-a)*u;}
+  function sm(x){return x*x*(3-2*x);}
+  function hash(x,y){var n=Math.sin(x*127.1+y*311.7)*43758.5453;return n-Math.floor(n);}
+  function noise(x,y){var xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi;var u=sm(xf),v=sm(yf);var a=lerp(hash(xi,yi),hash(xi+1,yi),u);var b=lerp(hash(xi,yi+1),hash(xi+1,yi+1),u);return lerp(a,b,v);}
+  var insts=[], t=0, raf=null;
+  function mk(el){
+    var dark=el.classList.contains('dark');
+    if(getComputedStyle(el).position==='static') el.style.position='relative';
+    var kids=Array.prototype.slice.call(el.children);
+    for(var i=0;i<kids.length;i++){var ch=kids[i],cs=getComputedStyle(ch);if(cs.position==='static')ch.style.position='relative';if(cs.zIndex==='auto')ch.style.zIndex='1';}
+    var cv=document.createElement('canvas');cv.className='blk-particles';cv.setAttribute('aria-hidden','true');
+    el.insertBefore(cv, el.firstChild);
+    var ctx=cv.getContext('2d');
+    var inst={el:el,cv:cv,ctx:ctx,dark:dark,pal:dark?DARK:LIGHT,parts:[],W:0,H:0,vis:true};
+    function size(){
+      var w=el.clientWidth,h=el.clientHeight;inst.W=w;inst.H=h;
+      cv.width=Math.max(1,Math.floor(w*DPR));cv.height=Math.max(1,Math.floor(h*DPR));
+      cv.style.width=w+'px';cv.style.height=h+'px';ctx.setTransform(DPR,0,0,DPR,0,0);
+      var n=Math.round(Math.min(90,(w*h)/9000));if(reduce)n=Math.round(n*0.5);
+      inst.parts=[];for(var i=0;i<n;i++){var c=inst.pal[(Math.random()*inst.pal.length)|0];inst.parts.push({x:Math.random()*w,y:Math.random()*h,s:Math.random()*1.0+0.5,a:(dark?0.35:0.18)+Math.random()*(dark?0.35:0.22),sp:Math.random()*0.35+0.15,col:c,ph:Math.random()*TAU});}
+    }
+    inst.size=size;size();
+    if('ResizeObserver' in window){var ro=new ResizeObserver(function(){size();});ro.observe(el);}
+    if('IntersectionObserver' in window){new IntersectionObserver(function(es){inst.vis=es[0].isIntersecting;},{threshold:0}).observe(el);}
+    return inst;
+  }
+  function render(inst,one){
+    var ctx=inst.ctx,W=inst.W,H=inst.H,ps=inst.parts;
+    ctx.clearRect(0,0,W,H);
+    ctx.globalCompositeOperation=inst.dark?'lighter':'source-over';
+    for(var i=0;i<ps.length;i++){var p=ps[i];
+      if(!one){var ang=noise(p.x*0.0018,p.y*0.0018+t*0.12)*TAU*2;p.x+=Math.cos(ang)*p.sp+Math.cos(t*0.6+p.ph)*0.12;p.y+=Math.sin(ang)*p.sp;
+        if(p.x<-6)p.x=W+6;else if(p.x>W+6)p.x=-6;if(p.y<-6)p.y=H+6;else if(p.y>H+6)p.y=-6;}
+      ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,TAU);ctx.fillStyle='rgba('+p.col[0]+','+p.col[1]+','+p.col[2]+','+p.a+')';ctx.fill();}
+  }
+  function frame(){t+=0.005;for(var i=0;i<insts.length;i++){if(insts[i].vis)render(insts[i],false);}raf=requestAnimationFrame(frame);}
+  function init(){
+    if(window.matchMedia&&window.matchMedia('(max-width: 820px)').matches) return;
+    var els=document.querySelectorAll('header.hero, section, footer');
+    for(var i=0;i<els.length;i++){insts.push(mk(els[i]));}
+    if(reduce){for(var j=0;j<insts.length;j++)render(insts[j],true);}
+    else raf=requestAnimationFrame(frame);
+  }
+  if(document.readyState!=='loading')init();else document.addEventListener('DOMContentLoaded',init);
+})();
+</script>
+
+</body>
+</html>
